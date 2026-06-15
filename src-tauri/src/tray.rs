@@ -137,6 +137,17 @@ pub fn setup_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
                     }
                 }
                 "quit" => {
+                    // On Linux, Tauri's graceful shutdown drops the wry/tao
+                    // Context (built on non-thread-safe `Rc`). If an in-flight
+                    // async IPC task still holds an AppHandle/Webview clone,
+                    // its drop can land on a tokio worker thread and race the
+                    // main thread, aborting with "tcache double free". Exit the
+                    // process directly to skip Rust drop glue. Settings are
+                    // persisted synchronously on every change, so nothing needs
+                    // flushing at exit.
+                    #[cfg(target_os = "linux")]
+                    std::process::exit(0);
+                    #[cfg(not(target_os = "linux"))]
                     app.exit(0);
                 }
                 _ => {}
