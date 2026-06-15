@@ -86,6 +86,7 @@
           "wtype",
           "ydotool"
         ],
+        "recommends": ["kdotool"],
         "release": "1",
         "postInstallScript": "rpm/scripts/postinstall.sh",
         "postRemoveScript": "rpm/scripts/postremove.sh"

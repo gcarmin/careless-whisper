@@ -32,6 +32,10 @@ ydotool (kernel uinput). Enable the daemon once, per user:
 
 (Requires access to /dev/uinput — usually granted to your active login
 session automatically. On X11 this is not needed; xdotool is used instead.)
+
+KDE Plasma users also need kdotool (already pulled in as a recommended
+dependency) so paste can refocus the original window after the recording
+overlay hides. If it is missing: sudo dnf install kdotool
 EOF
 
 exit 0

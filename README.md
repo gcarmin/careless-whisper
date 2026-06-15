@@ -92,8 +92,12 @@ chmod +x Careless\ Whisper_*_amd64.AppImage
 >    ```sh
 >    systemctl --user enable --now ydotoold
 >    ```
+> 3. **KDE Plasma only:** install `kdotool` so paste can refocus the right window (KWin doesn't return focus to the original app after the recording overlay hides):
+>    ```sh
+>    sudo dnf install kdotool   # Fedora
+>    ```
 >
-> On **X11** neither step is needed — the global hotkey works and paste uses `xdotool`.
+> On **X11** none of this is needed — the global hotkey works and paste uses `xdotool`.
 
 ### First launch
 
