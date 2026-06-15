@@ -73,7 +73,8 @@
           "libappindicator3-1",
           "xdotool",
           "wtype",
-          "ydotool"
+          "ydotool",
+          "wl-clipboard"
         ]
       },
       "rpm": {
@@ -85,7 +86,8 @@
           "xdotool",
           "wtype",
           "ydotool",
-          "kdotool"
+          "kdotool",
+          "wl-clipboard"
         ],
         "release": "1",
         "postInstallScript": "rpm/scripts/postinstall.sh",
