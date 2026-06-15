@@ -81,3 +81,14 @@ WHISPER_DONT_GENERATE_BINDINGS=1 cargo build --no-default-features
 - `WHISPER_DONT_GENERATE_BINDINGS=1` makes `whisper-rs-sys` copy its prebuilt `src/bindings.rs` instead of running bindgen. Fedora's clang (22.x) is too new for whisper-rs-sys 0.10's bindgen, which otherwise emits opaque (`_address`-only) structs → 72 `unknown field` errors. If you change whisper crate versions, `cargo clean -p whisper-rs-sys -p whisper-rs` before rebuilding (env changes alone don't trigger a build-script rerun).
 
 System deps (dnf): `webkit2gtk4.1-devel gtk3-devel libappindicator-gtk3-devel librsvg2-devel openssl-devel alsa-lib-devel cmake clang clang-devel gcc-c++ xdotool patchelf file`. Paste uses `xdotool` (X11) / `wtype` (Wayland). Global hotkey is limited under Wayland — app falls back to a FIFO socket at `~/.local/share/careless-whisper/careless-whisper.sock` (token in `fifo.token`).
+
+### RPM packaging (Fedora/RHEL)
+
+The `rpm` bundle target is enabled in `tauri.conf.json` (`bundle.targets` + `bundle.linux.rpm`). Runtime deps are declared in Fedora package names (`alsa-lib`, `webkit2gtk4.1`, `gtk3`, `libappindicator-gtk3`, `xdotool`, `wtype`) so `sudo dnf install ./*.rpm` pulls everything. Post-install/remove scriptlets live in `src-tauri/rpm/scripts/` (refresh desktop + icon caches; user models are preserved on uninstall).
+
+```bash
+WHISPER_DONT_GENERATE_BINDINGS=1 pnpm tauri build --bundles rpm -- --no-default-features
+# output: src-tauri/target/release/bundle/rpm/*.rpm
+```
+
+Tauri's rpm bundler is pure-Rust (no `rpmbuild` needed), so CI builds the `.rpm` on the existing `ubuntu-22.04` runner. The release workflow strips the space from the filename (`Careless Whisper-…` → `CarelessWhisper-…`) and attaches it to every `v*` release.

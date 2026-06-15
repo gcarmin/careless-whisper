@@ -19,7 +19,8 @@ Get the latest version from the [Releases](https://github.com/YarivGilad/careles
 |---|---|
 | macOS (Intel + Apple Silicon) | `.dmg` |
 | Windows | `.exe` installer or `.msi` |
-| Linux | `.deb` or `.AppImage` |
+| Linux (Debian/Ubuntu) | `.deb` or `.AppImage` |
+| Linux (Fedora/RHEL) | `.rpm` or `.AppImage` |
 
 ---
 
@@ -57,6 +58,35 @@ After that, the app will open normally.
 2. Run the installer and follow the prompts.
 
 > The app lives in the **system tray** (bottom-right of your screen).
+
+### Linux
+
+**Fedora / RHEL (`.rpm`)** — `dnf` pulls in every dependency automatically:
+
+```sh
+sudo dnf install ./CarelessWhisper-*.x86_64.rpm
+```
+
+**Debian / Ubuntu (`.deb`)**:
+
+```sh
+sudo apt install ./Careless\ Whisper_*_amd64.deb
+```
+
+**Any distro (`.AppImage`)** — no install, just run:
+
+```sh
+chmod +x Careless\ Whisper_*_amd64.AppImage
+./Careless\ Whisper_*_amd64.AppImage
+```
+
+> The app lives in the **system tray**. Paste uses `xdotool` on X11 and `wtype` on Wayland (both pulled in by the `.rpm`/`.deb`).
+>
+> **Wayland (KDE/GNOME):** global hotkeys are restricted, so the app listens on a per-user FIFO instead. Bind a custom keyboard shortcut to:
+>
+> ```sh
+> echo toggle > ~/.local/share/careless-whisper/careless-whisper.sock
+> ```
 
 ### First launch
 
