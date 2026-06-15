@@ -199,6 +199,16 @@ body {
   box-sizing: border-box;
 }
 
+/* On Linux/webkit (KDE), <select> controls are drawn by the native GTK theme
+   with a light background that ignores the dark `background` above, so the
+   light `color` is invisible. Use a strong blue for the selected value and the
+   options so the text reads on a white or light-gray control as well as the
+   dark control used on macOS. */
+.settings-select {
+  color: #1565c0;
+  font-weight: 500;
+}
+
 .settings-input:focus,
 .settings-select:focus {
   border-color: #0a84ff;
@@ -206,7 +216,7 @@ body {
 
 .settings-select option,
 .settings-select optgroup {
-  color: #111;
+  color: #1565c0;
   background: #fff;
 }
 
