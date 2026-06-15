@@ -84,9 +84,9 @@
           "libappindicator-gtk3",
           "xdotool",
           "wtype",
-          "ydotool"
+          "ydotool",
+          "kdotool"
         ],
-        "recommends": ["kdotool"],
         "release": "1",
         "postInstallScript": "rpm/scripts/postinstall.sh",
         "postRemoveScript": "rpm/scripts/postremove.sh"
