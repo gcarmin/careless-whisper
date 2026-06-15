@@ -228,12 +228,20 @@ fn is_wayland() -> bool {
 }
 
 /// Returns the current frontmost window target.
-/// - On X11: runs `xdotool getactivewindow` and returns the window ID.
-/// - On Wayland: tries `xdotool getactivewindow` via XWayland first (works on
-///   GNOME/Ubuntu), falls back to a "wayland" marker if that fails.
+/// - On Wayland: returns a "wayland" marker. Synthetic input must go through
+///   ydotool (uinput), so there is no window to capture. `xdotool
+///   getactivewindow` *succeeds* on KWin/KDE but returns an XWayland window id,
+///   and a Ctrl+V sent via xdotool to that id never reaches native Wayland apps
+///   — so we must not take the X11 path here.
+/// - On X11: runs `xdotool getactivewindow` and returns the window ID so we can
+///   refocus and paste into exactly that window.
 #[cfg(target_os = "linux")]
 pub fn get_frontmost_target() -> Option<FocusTarget> {
-    // Try xdotool first — it works on pure X11 and on Wayland+XWayland (GNOME).
+    if is_wayland() {
+        return Some("wayland".to_string());
+    }
+
+    // X11: capture the active window so paste can refocus it.
     if let Ok(output) = std::process::Command::new("xdotool")
         .arg("getactivewindow")
         .output()
@@ -244,12 +252,6 @@ pub fn get_frontmost_target() -> Option<FocusTarget> {
                 return Some(id);
             }
         }
-    }
-
-    if is_wayland() {
-        // Wayland without XWayland access — return a marker.
-        // paste_into_target will use the Wayland paste path.
-        return Some("wayland".to_string());
     }
 
     None

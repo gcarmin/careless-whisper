@@ -80,7 +80,9 @@ WHISPER_DONT_GENERATE_BINDINGS=1 cargo build --no-default-features
 - `--no-default-features` drops the `metal` feature (macOS-only GPU); Linux runs CPU inference. Without it the build fails on `ggml_backend_metal_log_set_callback`.
 - `WHISPER_DONT_GENERATE_BINDINGS=1` makes `whisper-rs-sys` copy its prebuilt `src/bindings.rs` instead of running bindgen. Fedora's clang (22.x) is too new for whisper-rs-sys 0.10's bindgen, which otherwise emits opaque (`_address`-only) structs → 72 `unknown field` errors. If you change whisper crate versions, `cargo clean -p whisper-rs-sys -p whisper-rs` before rebuilding (env changes alone don't trigger a build-script rerun).
 
-System deps (dnf): `webkit2gtk4.1-devel gtk3-devel libappindicator-gtk3-devel librsvg2-devel openssl-devel alsa-lib-devel cmake clang clang-devel gcc-c++ xdotool patchelf file`. Paste uses `xdotool` (X11) / `wtype` (Wayland). Global hotkey is limited under Wayland — app falls back to a FIFO socket at `~/.local/share/careless-whisper/careless-whisper.sock` (token in `fifo.token`).
+System deps (dnf): `webkit2gtk4.1-devel gtk3-devel libappindicator-gtk3-devel librsvg2-devel openssl-devel alsa-lib-devel cmake clang clang-devel gcc-c++ xdotool patchelf file`. Global hotkey is limited under Wayland — app falls back to a FIFO socket at `~/.local/share/careless-whisper/careless-whisper.sock` (token in `fifo.token`).
+
+**Paste backends** (`output/paste.rs`): on X11, `xdotool` captures the active window and sends Ctrl+V. On Wayland, `get_frontmost_target()` returns a `"wayland"` marker (no X11 window capture — `xdotool getactivewindow` succeeds on KWin but returns an XWayland id that Ctrl+V can't reach), and `paste_wayland()` tries ydotool → wtype → xdotool. Only **ydotool** works on KWin/Mutter (`wtype`'s virtual-keyboard protocol is wlroots-only; KDE rejects it). ydotool injects via `/dev/uinput`, so it needs `ydotoold` running: `systemctl --user enable --now ydotoold` (the active login session gets a `/dev/uinput` ACL automatically). The overlay window has `focus: false`, so the target app keeps focus and the injected Ctrl+V lands in it.
 
 ### RPM packaging (Fedora/RHEL)
 

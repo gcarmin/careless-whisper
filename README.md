@@ -80,13 +80,20 @@ chmod +x Careless\ Whisper_*_amd64.AppImage
 ./Careless\ Whisper_*_amd64.AppImage
 ```
 
-> The app lives in the **system tray**. Paste uses `xdotool` on X11 and `wtype` on Wayland (both pulled in by the `.rpm`/`.deb`).
+> The app lives in the **system tray**.
 >
-> **Wayland (KDE/GNOME):** global hotkeys are restricted, so the app listens on a per-user FIFO instead. Bind a custom keyboard shortcut to:
+> **Wayland (KDE/GNOME):**
 >
-> ```sh
-> echo toggle > ~/.local/share/careless-whisper/careless-whisper.sock
-> ```
+> 1. **Global hotkey** is restricted, so the app listens on a per-user FIFO instead. Bind a custom keyboard shortcut to:
+>    ```sh
+>    echo toggle > ~/.local/share/careless-whisper/careless-whisper.sock
+>    ```
+> 2. **Paste** uses `ydotool` (compositors block other synthetic-input methods). Enable its daemon once:
+>    ```sh
+>    systemctl --user enable --now ydotoold
+>    ```
+>
+> On **X11** neither step is needed — the global hotkey works and paste uses `xdotool`.
 
 ### First launch
 

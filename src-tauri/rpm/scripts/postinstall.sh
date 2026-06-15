@@ -24,6 +24,14 @@ app listens on a per-user FIFO instead. Bind a custom shortcut to:
   echo toggle > ~/.local/share/careless-whisper/careless-whisper.sock
 
 (The auth token is created automatically on first launch.)
+
+Pasting on Wayland: KWin/Mutter block synthetic keystrokes, so paste uses
+ydotool (kernel uinput). Enable the daemon once, per user:
+
+  systemctl --user enable --now ydotoold
+
+(Requires access to /dev/uinput — usually granted to your active login
+session automatically. On X11 this is not needed; xdotool is used instead.)
 EOF
 
 exit 0

@@ -72,7 +72,8 @@
           "libgtk-3-0",
           "libappindicator3-1",
           "xdotool",
-          "wtype"
+          "wtype",
+          "ydotool"
         ]
       },
       "rpm": {
@@ -82,7 +83,8 @@
           "gtk3",
           "libappindicator-gtk3",
           "xdotool",
-          "wtype"
+          "wtype",
+          "ydotool"
         ],
         "release": "1",
         "postInstallScript": "rpm/scripts/postinstall.sh",
