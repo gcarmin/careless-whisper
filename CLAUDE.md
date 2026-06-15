@@ -65,3 +65,19 @@ The app requires **Microphone** permission (for audio capture) and **Accessibili
 - Metal GPU acceleration is enabled by default (macOS only); on Windows build with `--no-default-features` for CPU-only
 - Models are ggml format; downloaded from Hugging Face, not bundled with the app
 - Minimum macOS version: 12.0 (Monterey)
+
+## Linux (Fedora) Dev Setup
+
+Verified working on Fedora 44 / KDE (Wayland). Two flags are **required** for every Linux build/run:
+
+```bash
+# dev
+WHISPER_DONT_GENERATE_BINDINGS=1 pnpm tauri dev -- --no-default-features
+# plain cargo
+WHISPER_DONT_GENERATE_BINDINGS=1 cargo build --no-default-features
+```
+
+- `--no-default-features` drops the `metal` feature (macOS-only GPU); Linux runs CPU inference. Without it the build fails on `ggml_backend_metal_log_set_callback`.
+- `WHISPER_DONT_GENERATE_BINDINGS=1` makes `whisper-rs-sys` copy its prebuilt `src/bindings.rs` instead of running bindgen. Fedora's clang (22.x) is too new for whisper-rs-sys 0.10's bindgen, which otherwise emits opaque (`_address`-only) structs → 72 `unknown field` errors. If you change whisper crate versions, `cargo clean -p whisper-rs-sys -p whisper-rs` before rebuilding (env changes alone don't trigger a build-script rerun).
+
+System deps (dnf): `webkit2gtk4.1-devel gtk3-devel libappindicator-gtk3-devel librsvg2-devel openssl-devel alsa-lib-devel cmake clang clang-devel gcc-c++ xdotool patchelf file`. Paste uses `xdotool` (X11) / `wtype` (Wayland). Global hotkey is limited under Wayland — app falls back to a FIFO socket at `~/.local/share/careless-whisper/careless-whisper.sock` (token in `fifo.token`).
