@@ -33,7 +33,7 @@ Rust is built via Cargo through the Tauri CLI — there are no standalone `cargo
 - Events (Rust → frontend): `recording-started`, `recording-stopped`, `transcription-complete`, `transcription-error`, `download-progress`
 
 **Two windows** (both start hidden):
-- `settings` — 600×500, standard decorations, shown from tray menu
+- `settings` — 600×500, shown from tray menu. Native decorations on macOS/Windows; on Linux the native decorations are dropped (`set_decorations(false)` in `tray.rs`) and a custom in-webview titlebar (`components/TitleBar.tsx`) is rendered instead — KWin/Wayland doesn't deliver native titlebar button clicks to the WebKitGTK surface, so the native min/close buttons are dead. The custom buttons call Tauri's JS window API (`minimize()`, `hide()`), and a `data-tauri-drag-region` makes the bar draggable.
 - `overlay` — 280×80, transparent, always-on-top, no decorations; shown during recording
 
 **Rust module layout** (`src-tauri/src/`):
@@ -52,6 +52,7 @@ Rust is built via Cargo through the Tauri CLI — there are no standalone `cargo
 - `components/Settings.tsx` — settings UI
 - `components/Overlay.tsx` — recording indicator overlay
 - `components/ModelManager.tsx` — model download/delete UI
+- `components/TitleBar.tsx` — custom window titlebar, rendered by `App.tsx` only on Linux (`navigator.userAgent` check); needs `core:window` `allow-minimize`/`allow-hide`/`allow-start-dragging` in `capabilities/default.json`
 - `hooks/useTauriEvents.ts` — subscribes to all backend events
 
 ## macOS Entitlements
